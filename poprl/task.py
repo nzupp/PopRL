@@ -10,7 +10,7 @@ from poprl.observations import pi
 MSPRIME_OBSERVATION_REGISTRY = {
     "sfs": {
         "process_state": sfs.process_state,
-        "process_action": sfs.process_action(),
+        "process_action": sfs.process_action,,
         "calculate_reward": sfs.calculate_reward_from_context,
         "action_space": sfs.get_action_space,
         "observation_space": sfs.get_observation_space,
@@ -19,7 +19,7 @@ MSPRIME_OBSERVATION_REGISTRY = {
     
     "pi": {
         "process_state": pi.process_state,
-        "process_action": pi.process_action(),
+        "process_action": pi.process_action,
         "calculate_reward": pi.calculate_reward_from_context,
         "action_space": pi.get_action_space,
         "observation_space": pi.get_observation_space,
@@ -49,7 +49,7 @@ SLIM_OBSERVATION_REGISTRY = {
 
 # Defines env task based on backend
 class msprimeTask:
-    def __init__(self, target, observation="sfs", parameters=None):
+    def __init__(self, target, observation="sfs", parameters=None, param_bounds=None):
         if observation not in MSPRIME_OBSERVATION_REGISTRY:
             raise ValueError(f"Unknown observation type '{observation}'. Available: {list(MSPRIME_OBSERVATION_REGISTRY)}")
         
@@ -58,7 +58,7 @@ class msprimeTask:
         self.parameters = parameters
         obs = MSPRIME_OBSERVATION_REGISTRY[observation]
         self.process_state = obs["process_state"]
-        self.process_action = obs["process_action"]
+        self.process_action = obs["process_action"](param_bounds=param_bounds)
         self.calculate_reward = obs["calculate_reward"]
         self.action_space = obs["action_space"]
         self.observation_space = obs["observation_space"]()
