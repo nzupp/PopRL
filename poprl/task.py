@@ -10,7 +10,7 @@ from poprl.observations import pi
 MSPRIME_OBSERVATION_REGISTRY = {
     "sfs": {
         "process_state": sfs.process_state,
-        "process_action": sfs.process_action,,
+        "process_action": sfs.process_action,
         "calculate_reward": sfs.calculate_reward_from_context,
         "action_space": sfs.get_action_space,
         "observation_space": sfs.get_observation_space,
