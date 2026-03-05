@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class msprimeEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, model, task, tunable=None, randomize_start=False, max_steps=100):
+    def __init__(self, model, task, tunable=None, randomize_start=False, max_steps=100, reps=10, seqlen=1e6):
         super().__init__()
         self.model = model
         self.task = task
@@ -22,6 +22,8 @@ class msprimeEnv(gym.Env):
         self.tunable = set(tunable) if tunable is not None else set()
         self.randomize_start = randomize_start
         self.max_steps = max_steps
+        self.reps = reps
+        self.seqlen = seqlen
 
         if isinstance(model, str):
             spec = importlib.util.spec_from_file_location("msprime_model", model)
@@ -113,16 +115,20 @@ class msprimeEnv(gym.Env):
         return d
 
     def _run_simulation(self):
-        """Run msprime simulation and return allele frequency spectrum"""
+        """Run msprime simulation and return averaged allele frequency spectrum"""
         if self.mod is not None:
             ts = self.mod.run(**self.current_params)
+            return ts.allele_frequency_spectrum()
         
-        else:
-            demography = self._rebuild_demography()
-            ts = msprime.sim_ancestry(samples=self.samples, demography=demography, sequence_length=1e6)
+        demography = self._rebuild_demography()
+        afs_list = []
+        
+        for _ in range(self.reps):
+            ts = msprime.sim_ancestry(samples=self.samples, demography=demography, sequence_length=self.seqlen)
             ts = msprime.sim_mutations(ts, rate=self.mutation_rate)
+            afs_list.append(np.array(ts.allele_frequency_spectrum()))
         
-        return ts.allele_frequency_spectrum()
+        return sum(afs_list) / self.reps
 
     def step(self, action):
         """Apply action, run simulation, return observation and reward"""
