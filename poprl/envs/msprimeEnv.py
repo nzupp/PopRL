@@ -162,7 +162,7 @@ class msprimeEnv(gym.Env):
         
         initial_state, self.context = self.task.get_initial_state(self.task.target)
         self.previous_state = initial_state
-        logger.info("MSPRIMEEnv reset")
+        logger.info("msprimeEnv reset")
         
         return initial_state, {}
 
