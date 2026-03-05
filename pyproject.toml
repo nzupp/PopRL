@@ -1,19 +1,24 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "slim_gym"
+name = "poprl"
 authors = [{name = "Niko Zuppas", email = "zuppas.3@osu.edu"}]
 readme = "README.md"
-dynamic = ["version", "description"]
+version = "0.1.0"
+requires-python = ">=3.8"
 dependencies = [
-    "gymnasium==1.0.0",
-    "matplotlib==3.10.0",
-    "numpy==1.26.4",
+    "msprime",
+    "stdpopsim",
+    "gymnasium",
     "stable-baselines3",
-    "setuptools",
+    "numpy",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["poprl*"]
 
 [project.urls]
 Home = "https://github.com/nzupp/SLiM-Gym"
