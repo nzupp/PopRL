@@ -39,15 +39,14 @@ def simulate_target(model, mutation_rate):
             
     return np.mean(afs_list, axis=0)
 
-def make_msprime(model, mutation_rate=None, task=None, tunable=None, randomize_start=False, max_steps=100, observation="sfs"):
-    """Makes the msprime env compatible with gymnasium (see get_stdpopsim_model for getting demographic models)"""
+def make_msprime(model, mutation_rate=None, task=None, tunable=None, randomize_start=False, max_steps=100, observation="sfs", param_bounds=None, reps=10, seqlen=1e6):
     if task is None:
-        task = msprimeTask(target=None, observation=observation)
+        task = msprimeTask(target=None, observation=observation, param_bounds=param_bounds)
     
     if task.target is None:
         task.target = simulate_target(model, mutation_rate)
     
-    return msprimeEnv(model=model, task=task, tunable=tunable, randomize_start=randomize_start, max_steps=max_steps)
+    return msprimeEnv(model=model, task=task, tunable=tunable, randomize_start=randomize_start, max_steps=max_steps, reps=reps, seqlen=seqlen)
 
 def make_slim(slim_file, mutation_rate=1e-7, observation="sfs", timeout=10.0):
     """Make the SLiM env compatible with gymnasium"""
