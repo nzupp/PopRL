@@ -48,7 +48,7 @@ SLIM_OBSERVATION_REGISTRY = {
 }
 
 # Defines env task based on backend
-class MsprimeTask:
+class msprimeTask:
     def __init__(self, target, observation="sfs", parameters=None):
         if observation not in MSPRIME_OBSERVATION_REGISTRY:
             raise ValueError(f"Unknown observation type '{observation}'. Available: {list(MSPRIME_OBSERVATION_REGISTRY)}")
@@ -64,7 +64,7 @@ class MsprimeTask:
         self.observation_space = obs["observation_space"]()
         self.get_initial_state = obs["get_initial_state"]
 
-class SlimTask:
+class SLiMTask:
     def __init__(self, observation="sfs", mutation_rate=1e-7):
         if observation not in SLIM_OBSERVATION_REGISTRY:
             raise ValueError(f"Unknown observation type '{observation}'. Available: {list(SLIM_OBSERVATION_REGISTRY)}")
