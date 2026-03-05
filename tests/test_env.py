@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 import shutil
-from poprl import make, make_slim
+from poprl import make_msprime, make_slim
 from poprl.catalog import get_model
 
 slim_available = pytest.mark.skipif(
@@ -14,7 +14,7 @@ slim_available = pytest.mark.skipif(
 def env():
     """Test if standard environment fixture initializes correctly"""
     model = get_model("HomSap", "Africa_1T12")
-    env = make(model, tunable=["event_0_initial_size"], randomize_start=False, max_steps=5)
+    env = make_msprime(model, tunable=["event_0_initial_size"], randomize_start=False, max_steps=5)
     yield env
     env.close()
 
@@ -70,8 +70,8 @@ def test_params_unchanged_on_hold(env):
 def test_randomize_start_differs_from_true():
     """Test if randomize_start changes initial parameters"""
     model = get_model("HomSap", "Africa_1T12")
-    env_rand = make(model, tunable=["event_0_initial_size"], randomize_start=True, max_steps=5)
-    env_fixed = make(model, tunable=["event_0_initial_size"], randomize_start=False, max_steps=5)
+    env_rand = make_msprime(model, tunable=["event_0_initial_size"], randomize_start=True, max_steps=5)
+    env_fixed = make_msprime(model, tunable=["event_0_initial_size"], randomize_start=False, max_steps=5)
     env_rand.reset()
     env_fixed.reset()
     assert env_rand.current_params != env_fixed.current_params
@@ -81,7 +81,7 @@ def test_randomize_start_differs_from_true():
 def test_pi_observation_env():
     """Test if environment supports pi observation"""
     model = get_model("HomSap", "Africa_1T12")
-    env = make(model, tunable=["event_0_initial_size"], max_steps=5, observation="pi")
+    env = make_msprime(model, tunable=["event_0_initial_size"], max_steps=5, observation="pi")
     obs, info = env.reset()
     assert obs.shape == env.observation_space.shape
     env.close()
