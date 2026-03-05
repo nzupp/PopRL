@@ -9,7 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class MSPRIMEEnv(gym.Env):
+class msprimeEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, model, task, tunable=None, randomize_start=False, max_steps=100):
