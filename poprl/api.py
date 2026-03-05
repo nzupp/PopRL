@@ -48,7 +48,7 @@ def make_msprime(model, mutation_rate=None, task=None, tunable=None, randomize_s
     if task.target is None:
         task.target = simulate_target(model, mutation_rate)
     
-    return MSPRIMEEnv(model=model, task=task, tunable=tunable, randomize_start=randomize_start, max_steps=max_steps)
+    return msprimeEnv(model=model, task=task, tunable=tunable, randomize_start=randomize_start, max_steps=max_steps)
 
 def make_slim(slim_file, mutation_rate=1e-7, observation="sfs", timeout=10.0):
     """Make the SLiM env compatible with gymnasium"""
