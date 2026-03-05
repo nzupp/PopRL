@@ -43,7 +43,7 @@ def simulate_target(model, mutation_rate):
 def make_msprime(model, mutation_rate=None, task=None, tunable=None, randomize_start=False, max_steps=100, observation="sfs"):
     """Makes the msprime env compatible with gymnasium (see get_stdpopsim_model for getting demographic models)"""
     if task is None:
-        task = MsprimeTask(target=None, observation=observation)
+        task = msprimeTask(target=None, observation=observation)
     
     if task.target is None:
         task.target = simulate_target(model, mutation_rate)
@@ -53,6 +53,6 @@ def make_msprime(model, mutation_rate=None, task=None, tunable=None, randomize_s
 def make_slim(slim_file, mutation_rate=1e-7, observation="sfs", timeout=10.0):
     """Make the SLiM env compatible with gymnasium"""
     # Note: no simulation needed, as we use the burn in to set expectation
-    task = SlimTask(observation=observation, mutation_rate=mutation_rate)
+    task = SLiMTask(observation=observation, mutation_rate=mutation_rate)
     
     return SLiMEnv(slim_file=slim_file, task=task, timeout=timeout)
