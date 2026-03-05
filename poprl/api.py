@@ -6,7 +6,7 @@ import importlib.util
 import numpy as np
 import msprime
 from poprl.task import MsprimeTask, SlimTask
-from poprl.envs.msprime_env import MSPRIMEEnv
+from poprl.envs.msprimeEnv import msprimeEnv
 from poprl.envs.SLiMEnv import SLiMEnv
 
 def simulate_target(model, mutation_rate):
