@@ -1,0 +1,56 @@
+// 1000 indv, 9999 sites
+initialize() {
+    defineConstant("FLAG_FILE", "flag.txt");
+    initializeMutationRate(1e-07);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 9999);
+    initializeRecombinationRate(1e-08);
+}
+
+1 early() {
+    sim.addSubpop("p1", 1000);
+    mutRate = 1e-07;
+}
+
+90:100 late() {
+    if (community.tick % 10 == 0) {
+        g = p1.sampleIndividuals(100).haplosomes;
+        g.outputHaplosomesToMS("state.txt", append=T);
+    }
+}
+
+101:500 early() {
+    if (community.tick % 10 == 0) {
+        // ---- Bottleneck phase (tick 101–500 only) ----
+        if (community.tick <= 500) {
+            newSize = asInteger(p1.individualCount * 0.95);
+            if (newSize < 100) {
+                newSize = 100;
+            }
+            p1.setSubpopulationSize(newSize);
+        }
+
+        // ---- Agent-controlled mutation rate ----
+        while (fileExists(FLAG_FILE) == F) {}
+        mutRateStr = readFile(FLAG_FILE);
+        while (size(mutRateStr) == 0) {
+            mutRateStr = readFile(FLAG_FILE);
+        }
+        mutRate = asFloat(mutRateStr);
+        sim.chromosome.setMutationRate(mutRate);
+    }
+}
+
+101:500 late() {
+    if (community.tick % 10 == 0) {
+        g = p1.sampleIndividuals(100).haplosomes;
+        g.outputHaplosomesToMS("state.txt", append=T);
+        deleteFile(FLAG_FILE);
+    }
+}
+
+501 late() {
+    while (fileExists(FLAG_FILE) == F) {}
+    writeFile("generation_complete.txt", "1");
+}
