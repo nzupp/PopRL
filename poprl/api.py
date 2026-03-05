@@ -5,7 +5,7 @@ API file for generating reinforcement envs for population genetic simulators
 import importlib.util
 import numpy as np
 import msprime
-from poprl.task import MsprimeTask, SlimTask
+from poprl.task import msprimeTask, SLiMTask
 from poprl.envs.msprimeEnv import msprimeEnv
 from poprl.envs.SLiMEnv import SLiMEnv
 
