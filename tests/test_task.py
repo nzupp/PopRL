@@ -1,6 +1,6 @@
 """Unit tests for MsprimeTask and SlimTask configuration and handling"""
 import pytest
-from poprl.task import MsprimeTask, SlimTask
+from poprl.task import msprimeTask, SLiMTask
 
 def test_msprime_task_sfs():
     """Test if MsprimeTask initializes correctly with SFS observation"""
