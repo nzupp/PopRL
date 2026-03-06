@@ -89,10 +89,10 @@ def get_sfs_from_ms(state_data, num_bins=NUM_BINS_MS):
 def get_expectation_sfs(target, num_bins=NUM_BINS):
     """Compute target SFS from AFS or list of AFS"""
     if isinstance(target, np.ndarray):
-        return [get_sfs(target, num_bins)]
+        return [get_sfs(target, num_bins)] if target.ndim == 1 else [get_joint_sfs(target)]
     
     if isinstance(target, list):
-        return [get_sfs(a, num_bins) for a in target]
+        return [get_sfs(a, num_bins) if a.ndim == 1 else get_joint_sfs(a) for a in target]
     
     return None
 
@@ -108,8 +108,13 @@ def process_state(afs, sfs_stack, step_count=1, num_bins=NUM_BINS):
     if step_count == 1 and sfs_stack.get('expectation') is None:
         warnings.warn("Expectation SFS not set at init; computing from step 1.", stacklevel=2)
         sfs_stack['expectation'] = get_expectation_sfs(afs, num_bins)
+
+    if isinstance(afs, np.ndarray) and afs.ndim > 1:
+        new_sfs = get_joint_sfs(afs)  
     
-    new_sfs = get_sfs(afs, num_bins)
+    else:
+        new_sfs = get_sfs(afs, num_bins)
+    
     sfs_stack['stack'].append(new_sfs)
     
     return np.stack(list(sfs_stack['stack']))
@@ -192,20 +197,25 @@ def get_action_space_slim():
 
 def get_observation_space(sfs_stack_size=STACK_SIZE, num_bins=NUM_BINS):
     """Stacked SFS observations for msprime env"""
-    return spaces.Box(low=0, high=np.inf, shape=(sfs_stack_size, num_bins), dtype=DTYPE)
+    return spaces.Box(low=0, high=np.inf, shape=(sfs_stack_size, obs_size), dtype=DTYPE)
 
 def get_observation_space_slim(sfs_stack_size=STACK_SIZE, num_bins=NUM_BINS_MS):
     """Stacked SFS observations for SLiM env"""
     return spaces.Box(low=0, high=np.inf, shape=(sfs_stack_size, num_bins), dtype=DTYPE)
 
-def get_initial_state(target=None, sfs_stack_size=STACK_SIZE, num_bins=NUM_BINS):
+def get_initial_state(target=None, sfs_stack_size=STACK_SIZE, obs_size=NUM_BINS):
     """Initialize zeroed SFS stack and context with target expectation"""
     stack = deque(maxlen=sfs_stack_size)
     
     for _ in range(sfs_stack_size):
-        stack.append(np.full(num_bins, 1e-10, dtype=DTYPE))
+        stack.append(np.full(obs_size, 1e-10, dtype=DTYPE))
+
+    if target is not None
+        expectation = get_expectation_sfs(target)
     
-    expectation = get_expectation_sfs(target, num_bins) if target is not None else None
+    else: 
+        expectation = None
+    
     sfs_stack = {'stack': stack, 'expectation': expectation}
     
     return np.stack(list(stack)), sfs_stack
