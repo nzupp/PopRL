@@ -10,6 +10,30 @@ STACK_SIZE = 8
 NUM_BINS = 21
 NUM_BINS_MS = 100
 DTYPE = np.float32
+MAX_OBS_SIZE = 9261 # (21*3)
+
+def compute_obs_size(samples):
+    """Get size of flattened joint SFS from sample dict"""
+    if samples is None:
+        return NUM_BINS
+
+    n_pops = len(samples)
+    obs_size = int(np.prod([(n * 2 + 1) for n in samples.values()]))
+    
+    if obs_size > MAX_OBS_SIZE:
+        warnings.warn(
+            "Observation space will be large and convergence may be slow.",
+            stacklevel=2,
+        )
+
+    return obs_size
+
+def get_joint_sfs(afs_nd):
+    """Flatten ND joint SFS from msprime"""
+    afs = np.array(afs_nd, dtype=DTYPE)
+    flat = afs.flatten()
+    
+    return np.where(flat > 0, flat, 1e-10).astype(DTYPE)
 
 def get_sfs(afs, num_bins=NUM_BINS):
     """Bin AFS into fixed-size SFS, returns near-zero array if empty"""
