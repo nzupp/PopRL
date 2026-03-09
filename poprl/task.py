@@ -6,6 +6,8 @@ set by the user. Current implementation is for the SFS, and for nucleotide diver
 from poprl.observations import sfs
 from poprl.observations import pi
 
+#TODO: add a new task where msprime can cantrol within episode choices as well, as a generator of demographic models
+
 # Sets env functions based on backend and stat used
 MSPRIME_OBSERVATION_REGISTRY = {
     "sfs": {
